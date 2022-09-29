@@ -10,12 +10,12 @@ def get_map():
         'value1': 'GET',
         'cmd2': 'map',
         'value2': '0',
-        'cmd3': 'unique',
-        'value3': '',
-        'cmd4': 'sort',
-        'value4': 'desc',
-        'cmd5': 'limit',
-        'value5': '15',
+        'cmd10': 'unique',
+        'value10': '',
+        'cmd8': 'sort',
+        'value8': 'desc',
+        'cmd6': 'limit',
+        'value6': '15',
     }
 
     response = request("POST", url, data=payload)
