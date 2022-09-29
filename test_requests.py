@@ -38,4 +38,4 @@ def map_unique():
 
 
 if __name__ == '__main__':
-    map_unique()
+    get_map()

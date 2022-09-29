@@ -7,6 +7,13 @@ class RunCommands:
     def __init__(self, data_file: Generator):
         self.__data_file = data_file
 
+    @staticmethod
+    def __get_item_after_split(data: str, item: int) -> str:
+        try:
+            return data.split()[item]
+        except IndexError:
+            raise BaseAppException('В функции map выбран не существующий столбец')
+
     def filter(self, data_for_filter: str) -> None:
         if not isinstance(data_for_filter, str):
             raise BaseAppException('В команде filter должен быть передан текст для фильтрации')
@@ -17,7 +24,7 @@ class RunCommands:
             data_for_map = int(data_for_map)
         except ValueError:
             raise BaseAppException('В команде map должен быть передан номер столбца')
-        self.__data_file = map(lambda data: data.split()[data_for_map], self.__data_file)
+        self.__data_file = map(lambda data: self.__get_item_after_split(data, data_for_map), self.__data_file)
 
     def unique(self, data_for_unique: str) -> None:
         if data_for_unique == '':
