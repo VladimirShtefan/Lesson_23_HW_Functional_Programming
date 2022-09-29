@@ -1,4 +1,4 @@
-from flask import abort
+from application.exeptions import BaseAppException
 
 
 class RequestParser:
@@ -21,25 +21,24 @@ class RequestParser:
         try:
             self.__file_name = data.pop('file_name')
         except KeyError:
-            abort(400, 'Не указан путь к файлу в аргументах запроса file_name')
+            raise BaseAppException('Не указан путь к файлу в аргументах запроса file_name')
         if len(data) % 2 != 0:
-            abort(400, 'Не верно заданы аргументы для обработки')
+            raise BaseAppException('Не верно заданы аргументы для обработки')
         self.__query = self.__validate_query(data)
 
     @staticmethod
     def __validate_query(query: dict) -> dict:
         _cmd = {}
         _values = {}
-        commands = ('filter', 'map', 'unique', 'sort', 'limit')
         query = dict(sorted(query.items(), key=lambda item: item[0]))
         for key, value in query.items():
-            if key.startswith('cmd') and value in commands:
+            if key.startswith('cmd') and value in ('filter', 'map', 'unique', 'sort', 'limit'):
                 _cmd[key.lstrip('cmd')] = value
             elif key.startswith('value'):
                 _values[key.lstrip('value')] = value
         if len(_cmd) != len(_values):
-            raise abort(400, 'Не верно заданы аргументы для обработки')
+            raise BaseAppException('Не верно заданы аргументы для обработки')
         try:
             return {_cmd[key]: _values[key] for key, value in _cmd.items()}
         except KeyError:
-            raise abort(400, 'Не верно заданы аргументы для обработки')
+            raise BaseAppException('Не верно заданы аргументы для обработки')

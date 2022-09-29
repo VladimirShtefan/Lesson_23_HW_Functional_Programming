@@ -2,6 +2,7 @@ from pathlib import Path
 
 from flask import Flask, request, abort
 
+from application.exeptions import BaseAppException
 from application.service.commands import RunCommands
 from application.service.datafile import DataFile
 from application.service.request import RequestParser
@@ -15,15 +16,20 @@ DATA_PATH = Path.joinpath(CURRENT_PATH, 'data')
 
 @app.route("/perform_query/", methods=['POST'])
 def perform_query():
-    parser = RequestParser(dict(request.values.items()))
-    file_name = Path.joinpath(DATA_PATH, parser.file_name)
-    query = parser.query
-    file = DataFile(file_name)
-    if not file.check_file():
-        abort(400, 'Не верный путь к файлу')
-    user_request = []
     try:
-        user_request = list(RunCommands(file.read(), **query).run())
-    except IndexError:
-        abort(400, f'При использовании команды map выбран не существующий столбец')
-    return app.response_class('\n'.join(user_request), content_type="text/plain")
+        parser = RequestParser(dict(request.values.items()))
+        file_name = Path.joinpath(DATA_PATH, parser.file_name)
+        query = parser.query
+    except BaseAppException as e:
+        abort(400, e.message)
+    else:
+        file = DataFile(file_name)
+        if not file.check_file():
+            abort(400, 'Не верный путь к файлу')
+        user_request = RunCommands(file.read())
+        try:
+            [getattr(user_request, command)(data) for command, data in query.items()]
+        except BaseAppException as e:
+            abort(400, e.message)
+        result = user_request.run()
+        return app.response_class('\n'.join(result), content_type="text/plain")

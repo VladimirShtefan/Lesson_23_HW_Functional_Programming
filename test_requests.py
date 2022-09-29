@@ -28,7 +28,7 @@ def map_unique():
     payload = {
         'file_name': 'apache_logs.txt',
         'cmd1': 'map',
-        'value1': '0',
+        'value1': '55',
         'cmd2': 'unique',
         'value2': ''
     }
@@ -38,4 +38,4 @@ def map_unique():
 
 
 if __name__ == '__main__':
-    get_map()
+    map_unique()
