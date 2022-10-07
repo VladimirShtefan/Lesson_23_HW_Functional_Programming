@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Generator
 
 from flask import Flask, request, abort
 
@@ -17,19 +18,20 @@ DATA_PATH = Path.joinpath(CURRENT_PATH, 'data')
 @app.route("/perform_query/", methods=['POST'])
 def perform_query():
     try:
-        parser = RequestParser(dict(request.values.items()))
-        file_name = Path.joinpath(DATA_PATH, parser.file_name)
-        query = parser.query
+        parser: RequestParser = RequestParser(dict(request.values.items()))
+        file_name: Path = Path.joinpath(DATA_PATH, parser.file_name)
+        query: dict = parser.query
     except BaseAppException as e:
         abort(400, e.message)
     else:
-        file = DataFile(file_name)
+        file: DataFile = DataFile(file_name)
         if not file.check_file():
             abort(400, 'Не верный путь к файлу')
-        user_request = RunCommands(file.read())
-        try:
-            [getattr(user_request, command)(data) for command, data in query.items()]
-        except BaseAppException as e:
-            abort(400, e.message)
-        result = user_request.run()
+        user_request: RunCommands = RunCommands(file.read())
+        for command, data in query.items():
+            try:
+                user_request.run_mapping(command, data)
+            except BaseAppException as e:
+                abort(400, e.message)
+        result: Generator | set | list = user_request.get_result()
         return app.response_class('\n'.join(result), content_type="text/plain")

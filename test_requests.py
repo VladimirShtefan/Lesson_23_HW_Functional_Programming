@@ -37,5 +37,18 @@ def map_unique():
     print(response.text)
 
 
+def regex():
+    url = "http://127.0.0.1:5000/perform_query"
+
+    payload = {
+        'file_name': 'apache_logs.txt',
+        'cmd1': 'regex',
+        'value1': '/grok HTTP/1.1" \d{1,3} \d{5}',
+    }
+
+    response = request("POST", url, data=payload)
+    print(response.text)
+
+
 if __name__ == '__main__':
-    get_map()
+    regex()

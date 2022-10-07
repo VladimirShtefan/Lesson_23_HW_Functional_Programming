@@ -32,7 +32,7 @@ class RequestParser:
         _values = {}
         query = dict(sorted(query.items(), key=lambda item: item[0]))
         for key, value in query.items():
-            if key.startswith('cmd') and value in ('filter', 'map', 'unique', 'sort', 'limit'):
+            if key.startswith('cmd') and value in ('filter', 'map', 'unique', 'sort', 'limit', 'regex'):
                 _cmd[key.lstrip('cmd')] = value
             elif key.startswith('value'):
                 _values[key.lstrip('value')] = value

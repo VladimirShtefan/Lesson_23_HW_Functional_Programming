@@ -4,8 +4,8 @@ from typing import Generator
 
 
 class DataFile:
-    def __init__(self, file_dir: Path):
-        self.__file_dir = file_dir
+    def __init__(self, file_dir: Path) -> None:
+        self.__file_dir: Path = file_dir
 
     def read(self) -> Generator:
         with open(self.__file_dir, 'r', encoding='utf-8') as file:
