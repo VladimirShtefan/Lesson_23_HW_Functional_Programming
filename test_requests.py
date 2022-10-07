@@ -28,7 +28,7 @@ def map_unique():
     payload = {
         'file_name': 'apache_logs.txt',
         'cmd1': 'map',
-        'value1': '55',
+        'value1': '0',
         'cmd2': 'unique',
         'value2': ''
     }
@@ -39,16 +39,18 @@ def map_unique():
 
 def regex():
     url = "http://127.0.0.1:5000/perform_query"
-
     payload = {
         'file_name': 'apache_logs.txt',
         'cmd1': 'regex',
         'value1': '/grok HTTP/1.1" \d{1,3} \d{5}',
+        # 'cmd1': 'regex',
+        # 'value1': 'images/\\w+\\.png',
+        # 'cmd2': 'sort',
+        # 'value2': 'asc'
     }
-
     response = request("POST", url, data=payload)
     print(response.text)
 
 
 if __name__ == '__main__':
-    regex()
+    get_map()

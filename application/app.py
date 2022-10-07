@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Generator
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, Response
 
 from application.exeptions import BaseAppException
 from application.service.commands import RunCommands
@@ -16,7 +16,7 @@ DATA_PATH = Path.joinpath(CURRENT_PATH, 'data')
 
 
 @app.route("/perform_query/", methods=['POST'])
-def perform_query():
+def perform_query() -> Response:
     try:
         parser: RequestParser = RequestParser(dict(request.values.items()))
         file_name: Path = Path.joinpath(DATA_PATH, parser.file_name)
